@@ -28,14 +28,17 @@ Vagrant.configure("2") do |config|
     # Provision Settings
     # Wordpress setup can be found here http://192.168.33.11/wordpress/wp-admin/setup-config.php?step=1
      webserver.vm.provision "shell", inline: <<-SHELL
-       apt-get update -y
-       apt-get install -y apache2
-       sudo apt-get install -y php libapache2-mod-php php-mysql
+     #!bin/bash
+     set -e
+       apt-get update -y -qq
+       sleep 45s
+       apt-get install -y -qq apache2
+       sudo apt-get install -y -qq php libapache2-mod-php php-mysql
        sudo systemctl restart apache2.service
-       sudo apt-get install memcached
+       sudo apt-get install -qq memcached
        cd /var/www/html
-       wget https://wordpress.org/latest.tar.gz
-       tar -xzvf latest.tar.gz
+       wget -qq https://wordpress.org/latest.tar.gz
+       tar -xzf latest.tar.gz
        sudo rm -R latest.tar.gz
        sudo rm index.html
 
