@@ -1,0 +1,67 @@
+version: '3'
+#Define services
+
+services:
+
+#web container settings
+  web:
+
+    #name of container
+    container_name: web
+
+    #image to be used
+    image: wordpress:latest
+
+    #ports to be forwarded
+    ports:
+      - "8080:80"
+
+    #environment variables for mysql database define in next container
+    environment:
+      - database_client=mysql
+      - database_connection_host=mysql
+      - database_connection_user=wordpress
+      - database_connection_password=wordpress
+      - database_connection_database=wordpress
+
+    #volumes to mount. Can be seen using <docker volume ls>
+    volumes:
+      - web-volume:/var/lib/ghost
+
+    #container will be added to both the web-network & mysql-network
+    networks:
+      - web-network
+      - mysql-network
+    depends_on:
+      - mysql
+
+    #mysql container settings
+  mysql:
+
+    #name of container
+    container_name: mysql
+
+    #image to be used is mysql 5.7
+    image: mysql:5.7
+
+    #database variables
+    environment:
+      - MYSQL_ROOT_PASSWORD=wordpress
+
+    #volumes to mount. Can be seen using <docker volume ls>
+    volumes:
+      - mysql-volume:/var/lib/mysql
+
+    #container will be added to only th mysql-network
+    networks:
+      - mysql-network
+
+#creates the volumes defined above.
+volumes:
+  web-volume:
+  mysql-volume:
+
+#creates the networks defined above.
+networks:
+  web-network:
+  mysql-network:
